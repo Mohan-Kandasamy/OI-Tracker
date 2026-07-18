@@ -6,209 +6,360 @@
     <title>OI Tracker</title>
     <style>
         :root {
-            --bg: #07111f;
-            --panel: #111d31;
-            --panel-2: #16253d;
-            --text: #f3f6ff;
-            --muted: #92a0ba;
-            --green: #2ecc71;
-            --red: #ff5d6c;
-            --accent: #4f8cff;
-            --accent-2: #7c5cff;
+            --bg: #f4f7ff;
+            --panel: rgba(255,255,255,0.94);
+            --border: #dfe8ff;
+            --text: #10233f;
+            --muted: #5b6b84;
+            --green: #16a34a;
+            --red: #dc2626;
+            --accent: #2563eb;
+            --accent-2: #1d4ed8;
+            --amber: #d97706;
         }
 
         * { box-sizing: border-box; }
         body {
             margin: 0;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--bg), #14243d 60%, #0d1728);
+            background:
+                radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 28%),
+                linear-gradient(135deg, #f8fbff 0%, #eef4ff 45%, #f7fbff 100%);
             color: var(--text);
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1440px;
             margin: 0 auto;
         }
 
-        .hero {
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 24px 28px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #07173a 0%, #133b7d 45%, #2563eb 100%);
+            color: #f8fbff;
+            box-shadow: 0 16px 45px rgba(15, 23, 42, 0.2);
+            overflow: hidden;
+        }
+
+        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
-        .hero h1 {
-            margin: 0;
-            font-size: 2rem;
+        .header .hero-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .hero .pill {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.1);
-            color: var(--text);
-            border: 1px solid rgba(255,255,255,0.12);
+        .header .hero-icon {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.16);
+            font-size: 1.3rem;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header .meta {
+            color: rgba(248,250,252,0.9);
+            font-size: 0.95rem;
         }
 
         .panel {
-            background: rgba(17, 29, 49, 0.96);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 14px 40px rgba(0,0,0,0.25);
-            margin-bottom: 18px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 10px 32px rgba(15, 23, 42, 0.08);
+            margin-bottom: 14px;
+            backdrop-filter: blur(8px);
         }
 
         .controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
             align-items: end;
+            justify-content: flex-start;
+        }
+
+        .header-controls {
+            margin-top: 0;
+            padding: 10px 12px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.16);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            overflow-x: auto;
+        }
+
+        .header-controls label {
+            color: rgba(248,250,252,0.95);
+            min-width: 0;
+            flex: 0 0 135px;
+            max-width: 135px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .header-controls input,
+        .header-controls select,
+        .header-controls button {
+            background: #ffffff;
+            color: var(--text);
+            border-color: rgba(255,255,255,0.25);
+            width: 100%;
+            height: 38px;
+            line-height: 1.2;
+            padding: 8px 10px;
+        }
+
+        .header-controls button {
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
         }
 
         label {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            font-size: 0.9rem;
+            gap: 5px;
+            font-size: 0.8rem;
             color: var(--muted);
+            min-width: 140px;
+            flex: 1 1 140px;
         }
 
         input, select, button {
+            padding: 8px 10px;
             border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.12);
-            padding: 10px 12px;
-            font-size: 0.96rem;
-            background: var(--panel-2);
+            border: 1px solid var(--border);
+            font-size: 0.8rem;
             color: var(--text);
+            background: #fff;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.16);
         }
 
         button {
             cursor: pointer;
             background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            font-weight: 600;
+            color: #fff;
+            border: none;
+            min-width: 92px;
+            font-weight: 700;
+            box-shadow: 0 8px 24px rgba(37,99,235,0.22);
+            height: 38px;
+            padding: 8px 12px;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
         }
 
         .summary {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 12px;
-            margin-top: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
         }
 
         .card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #f7faff 100%);
+            border: 1px solid var(--border);
+            border-radius: 14px;
             padding: 12px 14px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+            min-width: 0;
         }
 
         .card strong {
             display: block;
             color: var(--muted);
-            font-size: 0.8rem;
-            margin-bottom: 6px;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
         }
 
         .card .value {
-            font-size: 1.05rem;
-            font-weight: 700;
-        }
-
-        .legend {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-            color: var(--muted);
             font-size: 0.9rem;
+            /* font-weight: 800; */
+            color: var(--text);
         }
 
-        .legend span {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+        .card .meta {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 0.7rem;
         }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .dot.up { background: var(--green); }
-        .dot.down { background: var(--red); }
-        .dot.neutral { background: #f5b642; }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.7rem;
+            table-layout: auto;
             overflow: hidden;
-            border-radius: 12px;
+            border-radius: 14px;
         }
 
         th, td {
             padding: 10px 8px;
+            border-bottom: 1px solid var(--border);
             text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            font-size: 0.9rem;
+            vertical-align: middle;
+            white-space: normal;
+            word-break: break-word;
         }
 
         th {
-            background: rgba(255,255,255,0.06);
-            color: var(--muted);
+            background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 100%);
+            color: #475569;
             position: sticky;
             top: 0;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(37,99,235,0.03);
         }
 
         tbody tr:hover {
-            background: rgba(255,255,255,0.04);
+            background: rgba(37,99,235,0.08);
+            transform: scale(1.001);
         }
 
         .positive { color: var(--green); font-weight: 700; }
         .negative { color: var(--red); font-weight: 700; }
-        .neutral { color: #f5b642; }
+        .neutral { color: var(--amber); font-weight: 700; }
 
-        .prob-bar {
-            height: 8px;
-            width: 100%;
-            background: rgba(255,255,255,0.1);
+        .pill {
+            display: inline-block;
+            padding: 5px 10px;
             border-radius: 999px;
-            overflow: hidden;
-            margin-top: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 1px solid transparent;
         }
 
-        .prob-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent), var(--green));
+        .pill.bullish { background: #ecfdf3; color: var(--green); border-color: #a7f3d0; }
+        .pill.bearish { background: #fef2f2; color: var(--red); border-color: #fecaca; }
+        .pill.neutral { background: #fff7ed; color: var(--amber); border-color: #fed7aa; }
+
+        @media (max-width: 1200px) {
+            .header {
+                padding: 20px;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+            }
         }
 
-        .small { color: var(--muted); font-size: 0.8rem; }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .header {
+                padding: 16px;
+            }
+            .header-top {
+                align-items: flex-start;
+            }
+            .header .hero-title {
+                width: 100%;
+            }
+            .panel {
+                padding: 12px;
+            }
+            .controls,
+            .header-controls {
+                flex-direction: column;
+                align-items: stretch;
+                flex-wrap: wrap;
+            }
+            .header-controls label {
+                min-width: 0;
+                width: 100%;
+                flex: 1 1 auto;
+                max-width: none;
+            }
+            label {
+                min-width: 0;
+                width: 100%;
+            }
+            input, select, button {
+                width: 100%;
+            }
+            button {
+                min-width: 0;
+            }
+            .summary {
+                grid-template-columns: 1fr 1fr;
+            }
+            .card .value {
+                font-size: 0.7rem;
+            }
+        }
 
-        @media (max-width: 900px) {
-            table { display: block; overflow-x: auto; }
+        @media (max-width: 480px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 0.9rem;
+            }
+            .header .meta {
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="hero">
-            <div>
-                <h1>📊 OI Tracker</h1>
-                <p class="small">Index option analysis for Nifty and Sensex</p>
-            </div>
-            <div class="pill">GitHub Pages ready</div>
-        </header>
-
-        <section class="panel">
-            <div class="controls">
+        <header class="header">
+            <div class="header-top">
+                <div class="hero-title">
+                    <div class="hero-icon">📈</div>
+                    <div>
+                        <h1>OI Tracker</h1>
+                        <div class="meta">Index options view for Nifty and Sensex</div>
+                    </div>
+                </div>
+                <div class="meta">Current Date: <span id="todayText"></span></div>
+                   <div class="controls header-controls">
                 <label>
                     Underlying
                     <select id="underlying">
@@ -235,43 +386,47 @@
                 </label>
                 <button id="refreshBtn" type="button">Refresh</button>
             </div>
-
-            <div class="summary" id="summary"></div>
-            <div class="legend">
-                <span><i class="dot up"></i>Up move</span>
-                <span><i class="dot down"></i>Down move</span>
-                <span><i class="dot neutral"></i>Neutral / flat</span>
             </div>
+         
+        </header>
+
+        <section class="panel">
+            <div class="summary" id="summary"></div>
         </section>
 
         <section class="panel">
             <table>
                 <thead>
                     <tr>
-                        <th>Time Interval</th>
-                        <th>Strike Price</th>
-                        <th>Put LTP</th>
-                        <th>Probability</th>
-                        <th>Triggered Price</th>
+                        <th>Sl. No.</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>LTP</th>
+                        <th>High / Low</th>
+                        <th>Change in Put OI</th>
+                        <th>Change in Call OI</th>
+                        <th>Difference in OI</th>
+                        <th>Difference in OI (%)</th>
+                        <th>Strength</th>
+                        <th>Net PCR</th>
+                        <th>High / Low Difference in OI</th>
+                        <th>Sentiment</th>
                         <th>O=H / O=L</th>
-                        <th>Call LTP</th>
-                        <th>Δ Put OI</th>
-                        <th>Δ Call OI</th>
-                        <th>Diff OI</th>
-                        <th>Diff OI %</th>
-                        <th>Direction</th>
-                        <th>Change</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </section>
+
+        <section class="panel">
+            <div class="summary" id="bottomMetrics"></div>
+        </section>
     </div>
 
     <script>
         const configs = {
-            nifty: { label: 'Nifty', spot: 24000, step: 50, expiry: '2026-08-27' },
-            sensex: { label: 'Sensex', spot: 79000, step: 100, expiry: '2026-08-27' }
+            nifty: { label: 'Nifty', spot: 24000, step: 50 },
+            sensex: { label: 'Sensex', spot: 79000, step: 100 }
         };
 
         const intervalMap = {
@@ -290,14 +445,28 @@
         const intervalEl = document.getElementById('interval');
         const summaryEl = document.getElementById('summary');
         const tableBodyEl = document.getElementById('tableBody');
+        const bottomMetricsEl = document.getElementById('bottomMetrics');
         const refreshBtn = document.getElementById('refreshBtn');
+        const todayTextEl = document.getElementById('todayText');
+        const apiConfig = {
+            baseUrl: window.FIVE_PAISA_API_BASE_URL || '',
+            token: window.FIVE_PAISA_API_TOKEN || ''
+        };
 
         function formatCurrency(value) {
             return `₹${value.toLocaleString('en-IN')}`;
         }
 
-        function formatPct(value) {
-            return `${value.toFixed(1)}%`;
+        function formatSigned(value, decimals = 2) {
+            return `${value > 0 ? '+' : ''}${value.toFixed(decimals)}`;
+        }
+
+        function getTodayString() {
+            return new Date().toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
         }
 
         function getDefaultExpiry() {
@@ -307,53 +476,183 @@
             return nextWeek.toISOString().split('T')[0];
         }
 
-        function buildRows(config, intervalValue) {
+        function getTimeSlots(intervalValue, count = 41) {
+            const start = new Date();
+            start.setHours(9, 15, 0, 0);
+            const slots = [];
+            for (let i = 0; i < count; i++) {
+                const slotTime = new Date(start.getTime() + i * intervalValue * 60 * 1000);
+                slots.push(slotTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false }));
+            }
+            return slots;
+        }
+
+        function getMetrics(changePutOi, changeCallOi) {
+            const putChange = Number(changePutOi) || 0;
+            const callChange = Number(changeCallOi) || 0;
+            const diff = putChange - callChange;
+            const strengthScore = Math.abs(diff);
+            const denominator = putChange + callChange;
+            const netPcr = denominator === 0 ? 0 : diff / denominator;
+
+            let strengthLabel = 'Weak';
+            let sentiment = 'Neutral';
+            if (strengthScore >= 18) {
+                strengthLabel = diff > 0 ? 'Strong Bearish' : 'Strong Bullish';
+                sentiment = diff > 0 ? 'Bearish' : 'Bullish';
+            } else if (strengthScore >= 8) {
+                strengthLabel = diff > 0 ? 'Bearish' : 'Bullish';
+                sentiment = diff > 0 ? 'Bearish' : 'Bullish';
+            } else if (strengthScore > 0) {
+                strengthLabel = diff > 0 ? 'Weak Bearish' : 'Weak Bullish';
+                sentiment = diff > 0 ? 'Bearish' : 'Bullish';
+            }
+
+            return { diff, strengthScore, strengthLabel, netPcr, sentiment };
+        }
+
+        function getApiHeaders() {
+            const headers = { 'Content-Type': 'application/json' };
+            if (apiConfig.token) {
+                headers.Authorization = `Bearer ${apiConfig.token}`;
+            }
+            return headers;
+        }
+
+        function resolveApiRows(payload) {
+            if (Array.isArray(payload)) {
+                return payload;
+            }
+            if (!payload || typeof payload !== 'object') {
+                return [];
+            }
+            const candidateKeys = ['data', 'rows', 'records', 'optionChain', 'result', 'entries', 'items', 'values'];
+            for (const key of candidateKeys) {
+                const candidate = payload[key];
+                if (Array.isArray(candidate)) {
+                    return candidate;
+                }
+                if (candidate && typeof candidate === 'object') {
+                    const nested = resolveApiRows(candidate);
+                    if (nested.length) {
+                        return nested;
+                    }
+                }
+            }
+            return [];
+        }
+
+        function normalizeApiRows(apiRows, config, intervalValue) {
+            const timeSlots = getTimeSlots(intervalValue, Math.max(1, apiRows.length));
+            return apiRows.map((row, index) => {
+                const strike = Number(row.strike ?? row.strikePrice ?? row.strike_price ?? row.value ?? config.spot);
+                const ltp = Number(row.ltp ?? row.lastPrice ?? row.lastTradedPrice ?? row.close ?? row.price ?? config.spot);
+                const changePutOi = Number(row.changeInPutOi ?? row.change_put_oi ?? row.putOiChange ?? row.putOi ?? row.putOichange ?? 0);
+                const changeCallOi = Number(row.changeInCallOi ?? row.change_call_oi ?? row.callOiChange ?? row.callOi ?? row.callOichange ?? 0);
+                const diffOi = changeCallOi - changePutOi;
+                const diffPct = Math.round((diffOi / Math.max(1, Math.abs(changePutOi))) * 100 * 10) / 10;
+                const metrics = getMetrics(changePutOi, changeCallOi);
+                const breakLabel = strike > config.spot ? 'D.H.B' : strike < config.spot ? 'D.L.B' : 'Near Spot';
+                const state = strike > config.spot ? 'O=H' : strike < config.spot ? 'O=L' : 'O=H/O=L';
+                return {
+                    strike,
+                    timeValue: row.timeValue || row.time || row.timestamp || timeSlots[index] || '',
+                    ltp,
+                    changePutOi,
+                    changeCallOi,
+                    diffOi,
+                    diffPct,
+                    breakLabel,
+                    state,
+                    metrics
+                };
+            });
+        }
+
+        async function fetch5PaisaData(config, intervalValue, expiryValue) {
+            if (!apiConfig.baseUrl) {
+                return [];
+            }
+            const params = new URLSearchParams({
+                underlying: config.label.toLowerCase(),
+                expiry: expiryValue,
+                interval: String(intervalValue)
+            });
+            const url = `${apiConfig.baseUrl.replace(/\/$/, '')}?${params.toString()}`;
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: getApiHeaders()
+            });
+            if (!response.ok) {
+                throw new Error(`5Paisa API responded with ${response.status}`);
+            }
+            const payload = await response.json();
+            const rows = resolveApiRows(payload);
+            return normalizeApiRows(rows, config, intervalValue);
+        }
+
+        function buildRows(config, intervalValue, apiRows = []) {
+            if (apiRows.length) {
+                return apiRows;
+            }
             const spot = config.spot;
             const step = config.step;
             const rows = [];
             const lowerBound = spot - 20 * step;
-            const upperBound = spot + 20 * step;
+            const timeSlots = getTimeSlots(intervalValue);
             for (let i = 0; i <= 40; i++) {
                 const strike = lowerBound + i * step;
                 const distance = Math.abs(strike - spot);
-                const premiumWeight = Math.max(10, 120 - distance * 0.45);
-                const putLtp = Math.round((premiumWeight + intervalValue * 0.3) * 10) / 10;
-                const callLtp = Math.round((premiumWeight * 0.82 + intervalValue * 0.2) * 10) / 10;
-                const probability = Math.min(95, Math.max(8, 92 - distance * 0.18));
-                const trigger = Math.round((strike + (putLtp - callLtp) / 2) * 10) / 10;
-                const putOiChange = Math.round((distance / 10) * (strike >= spot ? 1.4 : -1.2) + intervalValue / 20);
-                const callOiChange = Math.round((distance / 12) * (strike >= spot ? 1.2 : -1.4) + intervalValue / 24);
-                const diffOi = callOiChange - putOiChange;
-                const diffPct = Math.round((diffOi / Math.max(1, Math.abs(putOiChange))) * 100 * 10) / 10;
-                const direction = diffOi > 0 ? 'up' : diffOi < 0 ? 'down' : 'neutral';
-                const changeMarker = diffOi > 0 ? '↑' : diffOi < 0 ? '↓' : '→';
+                const ltp = Math.max(75, Math.round((spot + (strike - spot) * 0.1 + intervalValue * 0.25) * 10) / 10);
+                const changePutOi = Math.round((distance / 15) * (strike >= spot ? 1.4 : -1.2) + intervalValue / 12);
+                const changeCallOi = Math.round((distance / 15) * (strike >= spot ? -1.1 : 1.2) + intervalValue / 15);
+                const diffOi = changeCallOi - changePutOi;
+                const diffPct = Math.round((diffOi / Math.max(1, Math.abs(changePutOi))) * 100 * 10) / 10;
+                const metrics = getMetrics(changePutOi, changeCallOi);
+                const breakLabel = strike > spot ? 'D.H.B' : strike < spot ? 'D.L.B' : 'Near Spot';
                 const state = strike > spot ? 'O=H' : strike < spot ? 'O=L' : 'O=H/O=L';
                 rows.push({
                     strike,
-                    putLtp,
-                    probability,
-                    trigger,
-                    state,
-                    callLtp,
-                    putOiChange,
-                    callOiChange,
+                    timeValue: timeSlots[i],
+                    ltp,
+                    changePutOi,
+                    changeCallOi,
                     diffOi,
                     diffPct,
-                    direction,
-                    changeMarker
+                    breakLabel,
+                    state,
+                    metrics
                 });
             }
             return rows;
         }
 
-        function render() {
+        async function render() {
             const config = configs[underlyingEl.value];
             const intervalValue = Number(intervalEl.value);
             const expiryValue = expiryEl.value || getDefaultExpiry();
             expiryEl.value = expiryValue;
+            todayTextEl.textContent = getTodayString();
 
-            const rows = buildRows(config, intervalValue);
-            const spotRow = rows.find((row) => row.strike === config.spot);
+            let rows = [];
+            let dataSourceLabel = 'Generated fallback';
+            try {
+                const apiRows = await fetch5PaisaData(config, intervalValue, expiryValue);
+                if (apiRows.length) {
+                    rows = apiRows;
+                    dataSourceLabel = '5Paisa API';
+                } else {
+                    rows = buildRows(config, intervalValue);
+                }
+            } catch (error) {
+                console.error('Unable to load 5Paisa data:', error);
+                rows = buildRows(config, intervalValue);
+                dataSourceLabel = `Generated fallback (${error.message})`;
+            }
+            const totalPutOi = rows.reduce((sum, row) => sum + row.changePutOi, 0);
+            const totalCallOi = rows.reduce((sum, row) => sum + row.changeCallOi, 0);
+            const overallMetrics = getMetrics(totalPutOi, totalCallOi);
+
             summaryEl.innerHTML = `
                 <div class="card">
                     <strong>Underlying</strong>
@@ -372,47 +671,72 @@
                     <div class="value">${intervalMap[intervalValue]}</div>
                 </div>
                 <div class="card">
-                    <strong>Current Trigger</strong>
-                    <div class="value">${spotRow ? formatCurrency(spotRow.trigger) : '-'}</div>
+                    <strong>Data Source</strong>
+                    <div class="value">${dataSourceLabel}</div>
                 </div>
                 <div class="card">
-                    <strong>Signal</strong>
-                    <div class="value ${spotRow && spotRow.direction === 'up' ? 'positive' : spotRow && spotRow.direction === 'down' ? 'negative' : 'neutral'}">${spotRow ? spotRow.direction.toUpperCase() : 'NEUTRAL'}</div>
+                    <strong>Strength</strong>
+                    <div class="value">${overallMetrics.strengthLabel}</div>
+                </div>
+                <div class="card">
+                    <strong>Net PCR</strong>
+                    <div class="value">${overallMetrics.netPcr.toFixed(2)}</div>
+                </div>
+                <div class="card">
+                    <strong>Sentiment</strong>
+                    <div class="value">${overallMetrics.sentiment}</div>
                 </div>
             `;
 
-            tableBodyEl.innerHTML = rows.map((row) => {
-                const putClass = row.putOiChange > 0 ? 'positive' : row.putOiChange < 0 ? 'negative' : 'neutral';
-                const callClass = row.callOiChange > 0 ? 'positive' : row.callOiChange < 0 ? 'negative' : 'neutral';
+            bottomMetricsEl.innerHTML = `
+                <div class="card">
+                    <strong>Strength Logic</strong>
+                    <div class="value">${overallMetrics.strengthLabel}</div>
+                    <div class="meta">strength_score = abs(ΔPut OI - ΔCall OI)</div>
+                </div>
+                <div class="card">
+                    <strong>Net PCR Logic</strong>
+                    <div class="value">${overallMetrics.netPcr.toFixed(2)}</div>
+                    <div class="meta">net_pcr = (ΔPut OI - ΔCall OI) / (ΔPut OI + ΔCall OI)</div>
+                </div>
+                <div class="card">
+                    <strong>Market Bias</strong>
+                    <div class="value">${overallMetrics.sentiment}</div>
+                    <div class="meta">Bullish / Bearish / Neutral based on calculated bias</div>
+                </div>
+            `;
+
+            tableBodyEl.innerHTML = rows.map((row, index) => {
+                const putClass = row.changePutOi > 0 ? 'positive' : row.changePutOi < 0 ? 'negative' : 'neutral';
+                const callClass = row.changeCallOi > 0 ? 'positive' : row.changeCallOi < 0 ? 'negative' : 'neutral';
                 const diffClass = row.diffOi > 0 ? 'positive' : row.diffOi < 0 ? 'negative' : 'neutral';
-                const dirClass = row.direction === 'up' ? 'positive' : row.direction === 'down' ? 'negative' : 'neutral';
+                const strengthClass = row.metrics.strengthLabel === 'Strong Bullish' || row.metrics.strengthLabel === 'Bullish' ? 'bullish' : row.metrics.strengthLabel === 'Strong Bearish' || row.metrics.strengthLabel === 'Bearish' ? 'bearish' : 'neutral';
+                const sentimentClass = row.metrics.sentiment === 'Bullish' ? 'bullish' : row.metrics.sentiment === 'Bearish' ? 'bearish' : 'neutral';
                 return `
                     <tr>
-                        <td>${intervalMap[intervalValue]}</td>
-                        <td>${row.strike.toLocaleString('en-IN')}</td>
-                        <td>${formatCurrency(row.putLtp)}</td>
-                        <td>
-                            ${row.probability.toFixed(1)}%
-                            <div class="prob-bar"><div class="prob-fill" style="width:${row.probability}%"></div></div>
-                        </td>
-                        <td>${formatCurrency(row.trigger)}</td>
+                        <td>${index + 1}</td>
+                        <td>${getTodayString()}</td>
+                        <td>${row.timeValue}</td>
+                        <td>${formatCurrency(row.ltp)}</td>
+                        <td>${row.breakLabel}</td>
+                        <td class="${putClass}">${formatSigned(row.changePutOi, 0)}</td>
+                        <td class="${callClass}">${formatSigned(row.changeCallOi, 0)}</td>
+                        <td class="${diffClass}">${formatSigned(row.diffOi, 0)}</td>
+                        <td class="${diffClass}">${formatSigned(row.diffPct, 1)}%</td>
+                        <td><span class="pill ${strengthClass}">${row.metrics.strengthLabel}</span></td>
+                        <td class="${row.metrics.netPcr >= 0 ? 'negative' : 'positive'}">${row.metrics.netPcr.toFixed(2)}</td>
+                        <td>${formatSigned(row.diffOi, 0)}</td>
+                        <td><span class="pill ${sentimentClass}">${row.metrics.sentiment}</span></td>
                         <td>${row.state}</td>
-                        <td>${formatCurrency(row.callLtp)}</td>
-                        <td class="${putClass}">${row.putOiChange > 0 ? '+' : ''}${row.putOiChange}</td>
-                        <td class="${callClass}">${row.callOiChange > 0 ? '+' : ''}${row.callOiChange}</td>
-                        <td class="${diffClass}">${row.diffOi > 0 ? '+' : ''}${row.diffOi}</td>
-                        <td class="${diffClass}">${row.diffPct > 0 ? '+' : ''}${row.diffPct}%</td>
-                        <td class="${dirClass}">${row.direction.toUpperCase()}</td>
-                        <td class="${dirClass}">${row.changeMarker}</td>
                     </tr>
                 `;
             }).join('');
         }
 
-        refreshBtn.addEventListener('click', render);
-        underlyingEl.addEventListener('change', render);
-        intervalEl.addEventListener('change', render);
-        expiryEl.addEventListener('change', render);
+        refreshBtn.addEventListener('click', () => render());
+        underlyingEl.addEventListener('change', () => render());
+        intervalEl.addEventListener('change', () => render());
+        expiryEl.addEventListener('change', () => render());
 
         render();
     </script>
