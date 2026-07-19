@@ -1,0 +1,72 @@
+{
+  "symbol": "^NSEI",
+  "spot": 25183.45,
+  "orbHigh": 25220,
+  "orbLow": 25110,
+  "atmStrike": 25200,
+  "intrinsic": 0,
+  "timeValue": 41,
+  "breakEven": 25241,
+  "riskReward": "1 : 2.5",
+  "recommendation": "BUY 25200 CE",
+  "confidence": 84,
+  "updated": "06:37:43",
+  "candle": "Breakout \u25b2",
+  "signal": "BUY",
+  "status": [
+    {
+      "label": "Above VWAP",
+      "active": true
+    },
+    {
+      "label": "Above EMA21",
+      "active": true
+    },
+    {
+      "label": "Volume Confirmed",
+      "active": true
+    },
+    {
+      "label": "RSI = 63",
+      "active": true
+    }
+  ],
+  "strikes": [
+    {
+      "strike": 25200,
+      "side": "ATM",
+      "signal": "BUY CE",
+      "signalColor": "positive",
+      "orbHigh": 25220,
+      "orbLow": 25110,
+      "intrinsic": 0,
+      "timeValue": 41,
+      "breakEven": 25241,
+      "status": "Momentum"
+    },
+    {
+      "strike": 25150,
+      "side": "OTM",
+      "signal": "WAIT",
+      "signalColor": "neutral",
+      "orbHigh": 25220,
+      "orbLow": 25110,
+      "intrinsic": 0,
+      "timeValue": 38,
+      "breakEven": 25191,
+      "status": "Watch"
+    },
+    {
+      "strike": 25250,
+      "side": "ITM",
+      "signal": "BUY PE",
+      "signalColor": "negative",
+      "orbHigh": 25220,
+      "orbLow": 25110,
+      "intrinsic": 0,
+      "timeValue": 44,
+      "breakEven": 25291,
+      "status": "Range"
+    }
+  ]
+}

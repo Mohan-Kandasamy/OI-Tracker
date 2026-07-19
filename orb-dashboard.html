@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ORB Dashboard</title>
+    <style>
+        :root {
+            --bg: #07111d;
+            --panel: rgba(9, 18, 34, 0.92);
+            --panel-2: rgba(255,255,255,0.06);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --green: #22c55e;
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --accent: #38bdf8;
+            --accent-2: #6366f1;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at top left, rgba(56,189,248,0.22), transparent 22%), linear-gradient(135deg, #020617 0%, #07111d 45%, #0f172a 100%);
+            padding: 18px;
+        }
+
+        .container { max-width: 1220px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+        .header { border: 1px solid rgba(255,255,255,0.12); background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 118, 110, 0.95)); border-radius: 24px; padding: 20px 24px; box-shadow: 0 16px 44px rgba(2, 6, 23, 0.38); }
+        .header-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .page-nav { display: flex; gap: 8px; flex-wrap: wrap; }
+        .page-nav a { color: rgba(248,250,252,0.92); text-decoration: none; padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.14); font-size: 0.8rem; }
+        .page-nav a.active { background: #fff; color: #0f172a; }
+        .hero { display: grid; gap: 8px; }
+        .hero h1 { margin: 0; font-size: 1.8rem; letter-spacing: -0.02em; }
+        .hero .meta { color: rgba(248,250,252,0.8); font-size: 0.95rem; }
+        .main-grid { display: grid; gap: 16px; grid-template-columns: 1.4fr 0.8fr; }
+        .card { background: var(--panel); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 18px; box-shadow: 0 20px 46px rgba(2, 6, 23, 0.28); }
+        .hero-card { display: grid; gap: 16px; }
+        .stats-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+        .stat { padding: 12px 14px; border-radius: 14px; background: var(--panel-2); border: 1px solid rgba(255,255,255,0.09); display: flex; flex-direction: column; gap: 4px; }
+        .stat span { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .stat strong { font-size: 1rem; font-weight: 700; }
+        .signal-box { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border-radius: 16px; background: linear-gradient(90deg, rgba(34,197,94,0.16), rgba(56,189,248,0.12)); border: 1px solid rgba(34,197,94,0.2); }
+        .signal-box .signal-badge { padding: 8px 12px; border-radius: 999px; background: rgba(34,197,94,0.15); color: var(--green); font-weight: 700; }
+        .status-list { display: flex; flex-direction: column; gap: 10px; }
+        .status-item { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.95rem; }
+        .status-item::before { content: '✔'; color: var(--green); font-weight: 700; }
+        .status-item.off::before { content: '•'; color: var(--amber); }
+        .badge { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 8px 12px; background: rgba(255,255,255,0.08); color: #fff; font-size: 0.8rem; }
+        .chart { width: 100%; height: 140px; display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; align-items: end; padding: 12px 0 0; }
+        .bar { border-radius: 999px 999px 4px 4px; background: linear-gradient(180deg, rgba(56,189,248,0.92), rgba(99,102,241,0.75)); min-height: 18px; }
+        .strike-table-wrap { overflow-x: auto; margin-top: 10px; }
+        .strike-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; color: var(--text); }
+        .strike-table th, .strike-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; white-space: nowrap; }
+        .strike-table th { color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.72rem; }
+        .strike-table tr.positive { background: rgba(34,197,94,0.07); }
+        .strike-table tr.negative { background: rgba(239,68,68,0.07); }
+        .strike-table tr.neutral { background: rgba(245,158,11,0.07); }
+        .signal-pill { display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
+        .signal-pill.buy { background: rgba(34,197,94,0.16); color: var(--green); }
+        .signal-pill.sell { background: rgba(239,68,68,0.16); color: var(--red); }
+        .signal-pill.wait { background: rgba(245,158,11,0.16); color: var(--amber); }
+        .positive { color: var(--green); }
+        .negative { color: var(--red); }
+        .neutral { color: var(--amber); }
+        .footer-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--muted); font-size: 0.85rem; }
+        button { border: 0; border-radius: 999px; padding: 9px 14px; color: white; cursor: pointer; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 10px 24px rgba(56,189,248,0.24); }
+        @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } .header-top { align-items: flex-start; } .strike-row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-top">
+                <div class="hero">
+                    <div class="page-nav">
+                        <a href="index.html">OI Tracker</a>
+                        <a class="active" href="orb-dashboard.html">ORB Dashboard</a>
+                    </div>
+                    <h1>NIFTY ORB OPTION DASHBOARD</h1>
+                    <div class="meta">ORB signals with strike-level rows and automatic refresh</div>
+                </div>
+                <button id="refreshBtn" type="button">Refresh</button>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <section class="card hero-card">
+                <div class="stats-grid">
+                    <div class="stat"><span>Spot Price</span><strong id="spot">—</strong></div>
+                    <div class="stat"><span>ATM Strike</span><strong id="atmStrike">—</strong></div>
+                    <div class="stat"><span>ORB High</span><strong id="orbHigh">—</strong></div>
+                    <div class="stat"><span>ORB Low</span><strong id="orbLow">—</strong></div>
+                </div>
+
+                <!-- <div class="signal-box">
+                    <div>
+                        <div class="badge" id="candle">Current Candle: —</div>
+                        <div style="margin-top: 8px; font-size: 1.1rem; font-weight: 700;" id="recommendation">Recommendation</div>
+                    </div>
+                    <div class="signal-badge" id="signalBadge">Signal</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat"><span>Intrinsic Value</span><strong id="intrinsic">—</strong></div>
+                    <div class="stat"><span>Time Value</span><strong id="timeValue">—</strong></div>
+                    <div class="stat"><span>Break-even</span><strong id="breakEven">—</strong></div>
+                    <div class="stat"><span>Risk Reward</span><strong id="riskReward">—</strong></div>
+                </div> -->
+
+                <!-- <div class="chart" id="chart" aria-label="sample trend chart"></div> -->
+            </section>
+
+            <section class="card">
+                <div class="stats-grid">
+                    <div class="stat"><span>Confidence</span><strong id="confidence">—</strong></div>
+                    <div class="stat"><span>Updated</span><strong id="updated">—</strong></div>
+                </div>
+                <div class="status-list" style="margin-top: 14px;">
+                    <div class="status-item" id="statusVwap">Above VWAP</div>
+                    <div class="status-item" id="statusEma">Above EMA21</div>
+                    <div class="status-item" id="statusVolume">Volume Confirmed</div>
+                    <div class="status-item" id="statusRsi">RSI = 63</div>
+                </div>
+            </section>
+        </div>
+
+        <section class="card">
+            <div class="footer-row">
+                <strong>Strike list view</strong>
+                <span>ATM / ITM / OTM rows update on refresh without removing earlier strikes</span>
+            </div>
+            <div class="strike-table-wrap">
+                <table class="strike-table">
+                    <thead>
+                        <tr>
+                            <th>Strike</th>
+                            <th>Type</th>
+                            <th>LTP</th>
+                            <th>ORB</th>
+                            <th>Intrinsic</th>
+                            <th>Time Value</th>
+                            <th>Break-even</th>
+                            <th>VWAP</th>
+                            <th>EMA21</th>
+                            <th>Volume</th>
+                            <th>Confidence</th>
+                            <th>RSI</th>
+                            <th>Signal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="strikeList"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="card footer-row">
+            <span id="footerMessage">Ready to render</span>
+            <span>GitHub Pages friendly static dashboard</span>
+        </div>
+    </div>
+
+    <script>
+        const defaultData = {
+            spot: 25183.45,
+            orbHigh: 25220,
+            orbLow: 25110,
+            atmStrike: 25200,
+            intrinsic: 83,
+            timeValue: 41,
+            breakEven: 25241,
+            riskReward: '1 : 2.5',
+            recommendation: 'BUY 25200 CE',
+            confidence: 84,
+            updated: '09:46:03',
+            candle: 'Breakout ▲',
+            signal: 'BUY',
+            status: [
+                { label: 'Above VWAP', active: true },
+                { label: 'Above EMA21', active: true },
+                { label: 'Volume Confirmed', active: true },
+                { label: 'RSI = 63', active: true }
+            ],
+            strikes: [
+                { strike: 25200, side: 'ATM', signal: 'BUY CE', signalColor: 'positive', orbHigh: 25220, orbLow: 25110, intrinsic: 83, timeValue: 41, breakEven: 25241, status: 'Momentum' },
+                { strike: 25150, side: 'OTM', signal: 'WAIT', signalColor: 'neutral', orbHigh: 25220, orbLow: 25110, intrinsic: 0, timeValue: 35, breakEven: 25185, status: 'Watch' },
+                { strike: 25250, side: 'ITM', signal: 'BUY PE', signalColor: 'negative', orbHigh: 25220, orbLow: 25110, intrinsic: 120, timeValue: 37, breakEven: 25287, status: 'Range' }
+            ]
+        };
+
+        function formatCurrency(value) {
+            return `₹${Number(value).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+        }
+
+        function formatNumber(value) {
+            return Number(value).toLocaleString('en-IN');
+        }
+
+        function buildStrikeRows(data) {
+            const baseRows = Array.isArray(data.strikes) && data.strikes.length ? data.strikes : [];
+            if (!baseRows.length) {
+                return [];
+            }
+
+            return baseRows.map((row) => {
+                const strike = Number(row.strike ?? row.strikePrice ?? 0);
+                const type = row.type || row.side || 'OTM';
+                const ltp = Number(row.ltp ?? row.lastPrice ?? data.spot ?? 0);
+                const signal = String(row.signal || row.action || 'WAIT').toUpperCase();
+                const signalColor = String(row.signalColor || (signal === 'BUY' ? 'buy' : signal === 'SELL' ? 'sell' : 'wait')).toLowerCase();
+                const orbHigh = Number(row.orbHigh ?? data.orbHigh ?? 0);
+                const orbLow = Number(row.orbLow ?? data.orbLow ?? 0);
+                const intrinsic = Number(row.intrinsic ?? 0);
+                const timeValue = Number(row.timeValue ?? data.timeValue ?? 0);
+                const breakEven = Number(row.breakEven ?? 0);
+                const vwapValue = Number(row.vwapValue ?? orbHigh - 8 ?? 0);
+                const ema21Value = Number(row.ema21Value ?? orbHigh - 12 ?? 0);
+                const volume = row.volume || (row.volumeConfirmed ? 'Confirmed' : 'Watch');
+                const confidence = Number(row.confidence ?? data.confidence ?? 0);
+                const rsi = row.rsi ?? '63';
+                const vwap = row.vwap || (row.vwapValue && row.vwapValue > orbLow ? 'Above' : 'Below');
+                const ema21 = row.ema21 || (row.ema21Value && row.ema21Value > orbLow ? 'Above' : 'Below');
+                return {
+                    strike,
+                    type,
+                    ltp,
+                    signal,
+                    signalColor,
+                    orbHigh,
+                    orbLow,
+                    intrinsic,
+                    timeValue,
+                    breakEven,
+                    vwap,
+                    vwapValue,
+                    ema21,
+                    ema21Value,
+                    volume,
+                    confidence,
+                    rsi
+                };
+            });
+        }
+
+        function renderStrikeRows(data) {
+            const list = document.getElementById('strikeList');
+            const rows = buildStrikeRows(data);
+            if (!rows.length) {
+                list.innerHTML = '<tr><td colspan="13" style="text-align:center;color:var(--muted);">No strike data available</td></tr>';
+                return;
+            }
+            list.innerHTML = rows.map((row) => `
+                <tr class="${row.signalColor}">
+                    <td><strong>${formatNumber(row.strike)}</strong></td>
+                    <td>${row.type}</td>
+                    <td>${formatCurrency(row.ltp ?? 0)}</td>
+                    <td>${formatNumber(row.orbHigh)} / ${formatNumber(row.orbLow)}</td>
+                    <td>${formatCurrency(row.intrinsic)}</td>
+                    <td>${formatCurrency(row.timeValue)}</td>
+                    <td>${formatNumber(row.breakEven)}</td>
+                    <td>${row.vwap} ${row.vwapValue !== undefined && row.vwapValue !== null ? formatCurrency(row.vwapValue) : ''}</td>
+                    <td>${row.ema21} ${row.ema21Value !== undefined && row.ema21Value !== null ? formatCurrency(row.ema21Value) : ''}</td>
+                    <td>${row.volume}</td>
+                    <td>${row.confidence ?? 0}%</td>
+                    <td>${row.rsi}</td>
+                    <td><span class="signal-pill ${row.signalColor.toLowerCase()}">${row.signal}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function populateDashboard(data) {
+            const safeData = { ...defaultData, ...data, source: data.source || 'sample fallback' };
+            document.getElementById('spot').textContent = formatCurrency(safeData.spot);
+            document.getElementById('atmStrike').textContent = formatNumber(safeData.atmStrike);
+            document.getElementById('orbHigh').textContent = formatNumber(safeData.orbHigh);
+            document.getElementById('orbLow').textContent = formatNumber(safeData.orbLow);
+            document.getElementById('intrinsic').textContent = formatCurrency(safeData.intrinsic);
+            document.getElementById('timeValue').textContent = formatCurrency(safeData.timeValue);
+            document.getElementById('breakEven').textContent = formatNumber(safeData.breakEven);
+            document.getElementById('riskReward').textContent = safeData.riskReward;
+            document.getElementById('recommendation').textContent = `Recommendation • ${safeData.recommendation}`;
+            document.getElementById('confidence').textContent = `${safeData.confidence}%`;
+            document.getElementById('updated').textContent = safeData.updated;
+            document.getElementById('candle').textContent = `Current Candle: ${safeData.candle}`;
+            document.getElementById('signalBadge').textContent = safeData.signal || 'BUY';
+            document.getElementById('footerMessage').textContent = `Loaded from ${safeData.source}`;
+
+            const statusItems = [
+                document.getElementById('statusVwap'),
+                document.getElementById('statusEma'),
+                document.getElementById('statusVolume'),
+                document.getElementById('statusRsi')
+            ];
+            statusItems.forEach((item, index) => {
+                const status = safeData.status?.[index];
+                if (status) {
+                    item.textContent = status.label;
+                    item.classList.toggle('off', !status.active);
+                }
+            });
+
+            const chart = document.getElementById('chart');
+            chart.innerHTML = '';
+            const bars = [58, 72, 88, 61, 95, 74, 84, 90, 76, 92];
+            bars.forEach((height) => {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                bar.style.height = `${height}%`;
+                chart.appendChild(bar);
+            });
+
+            renderStrikeRows(safeData);
+        }
+
+        async function loadDashboard() {
+            try {
+                const response = await fetch('data.json', { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error('data.json not found');
+                }
+                const data = await response.json();
+                populateDashboard({ ...defaultData, ...data, source: 'data.json' });
+            } catch (error) {
+                console.warn(error);
+                populateDashboard({ ...defaultData, source: 'sample fallback' });
+            }
+        }
+
+        document.getElementById('refreshBtn').addEventListener('click', loadDashboard);
+        loadDashboard();
+    </script>
+</body>
+</html>

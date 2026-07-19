@@ -57,6 +57,27 @@
             flex-wrap: wrap;
         }
 
+        .page-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .page-nav a {
+            color: rgba(248,250,252,0.92);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.14);
+            font-size: 0.8rem;
+        }
+
+        .page-nav a.active {
+            background: #fff;
+            color: #0f172a;
+        }
+
         .header .hero-title {
             display: flex;
             align-items: center;
@@ -93,6 +114,110 @@
             box-shadow: 0 10px 32px rgba(15, 23, 42, 0.08);
             margin-bottom: 14px;
             backdrop-filter: blur(8px);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.14);
+            color: rgba(248,250,252,0.95);
+            font-size: 0.78rem;
+            white-space: nowrap;
+        }
+
+        .connection-status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fbbf24;
+        }
+
+        .connection-status.connected::before {
+            background: #34d399;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 1000;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-dialog {
+            width: min(760px, 100%);
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 24px 70px rgba(15, 23, 42, 0.25);
+            padding: 20px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--text);
+        }
+
+        .modal-close {
+            border: 0;
+            min-width: 0;
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: var(--text);
+            box-shadow: none;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .connection-form label {
+            min-width: 0;
+            flex: 1 1 0;
+            width: 100%;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .modal-actions .secondary {
+            background: #e2e8f0;
+            color: var(--text);
+            box-shadow: none;
         }
 
         .controls {
@@ -354,12 +479,21 @@
                 <div class="hero-title">
                     <div class="hero-icon">📈</div>
                     <div>
+                        <div class="page-nav">
+                            <a class="active" href="index.html">OI Tracker</a>
+                            <a href="orb-dashboard.html">ORB Dashboard</a>
+                        </div>
                         <h1>OI Tracker</h1>
                         <div class="meta">Index options view for Nifty and Sensex</div>
                     </div>
                 </div>
-                <div class="meta">Current Date: <span id="todayText"></span></div>
-                   <div class="controls header-controls">
+                <div class="header-actions">
+                    <div class="meta">Current Date: <span id="todayText"></span></div>
+                    <div id="connectionStatus" class="connection-status">Connection pending</div>
+                    <button id="connectBtn" type="button">Configure Connection</button>
+                </div>
+            </div>
+            <div class="controls header-controls">
                 <label>
                     Underlying
                     <select id="underlying">
@@ -386,8 +520,6 @@
                 </label>
                 <button id="refreshBtn" type="button">Refresh</button>
             </div>
-            </div>
-         
         </header>
 
         <section class="panel">
@@ -423,6 +555,55 @@
         </section>
     </div>
 
+    <div id="connectionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="connectionModalTitle">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 id="connectionModalTitle">5Paisa Connection Configuration</h3>
+                <button id="closeModalBtn" class="modal-close" type="button" aria-label="Close">×</button>
+            </div>
+            <form id="connectionForm" class="connection-form">
+                <div class="field-grid">
+                    <label>
+                        App Source
+                        <input name="app_source" type="text" placeholder="Example: 9976" required />
+                    </label>
+                    <label>
+                        App Name
+                        <input name="app_name" type="text" placeholder="Example: my-app" required />
+                    </label>
+                    <label>
+                        User ID
+                        <input name="user_id" type="text" placeholder="Your 5Paisa user ID" required />
+                    </label>
+                    <label>
+                        Password
+                        <input name="password" type="password" placeholder="Your 5Paisa password" required />
+                    </label>
+                    <label>
+                        User Key
+                        <input name="user_key" type="password" placeholder="Your user key" required />
+                    </label>
+                    <label>
+                        Encryption Key
+                        <input name="encryption_key" type="password" placeholder="Your encryption key" required />
+                    </label>
+                    <label>
+                        Access Token
+                        <input name="access_token" type="password" placeholder="Optional access token" />
+                    </label>
+                    <label>
+                        Market Data URL
+                        <input name="market_data_url" type="text" placeholder="Optional API endpoint" />
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button id="cancelModalBtn" class="secondary" type="button">Cancel</button>
+                    <button type="submit">Connect</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const configs = {
             nifty: { label: 'Nifty', spot: 24000, step: 50 },
@@ -447,9 +628,15 @@
         const tableBodyEl = document.getElementById('tableBody');
         const bottomMetricsEl = document.getElementById('bottomMetrics');
         const refreshBtn = document.getElementById('refreshBtn');
+        const connectBtn = document.getElementById('connectBtn');
+        const connectionStatusEl = document.getElementById('connectionStatus');
         const todayTextEl = document.getElementById('todayText');
+        const connectionModal = document.getElementById('connectionModal');
+        const connectionForm = document.getElementById('connectionForm');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
         const apiConfig = {
-            baseUrl: window.FIVE_PAISA_API_BASE_URL || '',
+            baseUrl: window.FIVE_PAISA_API_BASE_URL || '/api/5paisa/market-data',
             token: window.FIVE_PAISA_API_TOKEN || ''
         };
 
@@ -570,9 +757,6 @@
         }
 
         async function fetch5PaisaData(config, intervalValue, expiryValue) {
-            if (!apiConfig.baseUrl) {
-                return [];
-            }
             const params = new URLSearchParams({
                 underlying: config.label.toLowerCase(),
                 expiry: expiryValue,
@@ -589,6 +773,45 @@
             const payload = await response.json();
             const rows = resolveApiRows(payload);
             return normalizeApiRows(rows, config, intervalValue);
+        }
+
+        function openConnectionModal() {
+            connectionModal.classList.add('open');
+        }
+
+        function closeConnectionModal() {
+            connectionModal.classList.remove('open');
+        }
+
+        async function saveConnectionConfig(event) {
+            event.preventDefault();
+            const payload = Object.fromEntries(new FormData(connectionForm).entries());
+            const cleanedPayload = Object.fromEntries(
+                Object.entries(payload).filter(([, value]) => value !== '')
+            );
+            try {
+                const response = await fetch('/api/5paisa/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cleanedPayload)
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(data.message || 'Unable to save connection');
+                }
+                if (cleanedPayload.access_token) {
+                    apiConfig.token = cleanedPayload.access_token;
+                }
+                connectionStatusEl.textContent = 'Connected';
+                connectionStatusEl.classList.add('connected');
+                closeConnectionModal();
+                await render();
+            } catch (error) {
+                console.error(error);
+                connectionStatusEl.textContent = 'Connection failed';
+                connectionStatusEl.classList.remove('connected');
+                alert(error.message || 'Connection failed');
+            }
         }
 
         function buildRows(config, intervalValue, apiRows = []) {
@@ -734,6 +957,15 @@
         }
 
         refreshBtn.addEventListener('click', () => render());
+        connectBtn.addEventListener('click', openConnectionModal);
+        closeModalBtn.addEventListener('click', closeConnectionModal);
+        cancelModalBtn.addEventListener('click', closeConnectionModal);
+        connectionModal.addEventListener('click', (event) => {
+            if (event.target === connectionModal) {
+                closeConnectionModal();
+            }
+        });
+        connectionForm.addEventListener('submit', saveConnectionConfig);
         underlyingEl.addEventListener('change', () => render());
         intervalEl.addEventListener('change', () => render());
         expiryEl.addEventListener('change', () => render());
